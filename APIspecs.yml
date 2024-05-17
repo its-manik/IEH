@@ -1,0 +1,909 @@
+openapi: 3.0.1
+info:
+  title: IEH API Service
+  version: v1
+paths:
+  '/api/v{version}/ActivityType/activity-type':
+    post:
+      tags:
+        - ActivityType
+      summary: Creates a new activity type.
+      description: This endpoint allows you to create a new activity type.
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The activity type data to be created.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityTypeDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ActivityTypeDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ActivityTypeDTO'
+      responses:
+        '201':
+          description: Returns the ID of the newly created activity type. Returns the HTTP status code 201 (Created).
+        '401':
+          description: If the request is unauthorized. User authentication is required.
+        '403':
+          description: If the request is forbidden. User does not have permission to access the resource.
+        '409':
+          description: Returns a conflict response if an activity type with the same name already exists.
+        '500':
+          description: If an unexpected error occurs during the creation process.
+    get:
+      tags:
+        - ActivityType
+      summary: Retrieves a list of all activity types.
+      description: This endpoint retrieves a paginated list of all activity types.
+      parameters:
+        - name: Size
+          in: query
+          description: The number of activity types to retrieve per page. Default is 10.
+          schema:
+            maximum: 2147483647
+            minimum: 1
+            type: integer
+            format: int32
+        - name: PageNumber
+          in: query
+          description: The page number to retrieve. Default is 1.
+          schema:
+            maximum: 2147483647
+            minimum: 1
+            type: integer
+            format: int32
+        - name: SortBy
+          in: query
+          description: The field to sort the activity types by.Default is Name
+          schema:
+            type: string
+        - name: SortOrder
+          in: query
+          description: 'The sort order, either ''asc'' or ''desc''.Default is asc'
+          schema:
+            pattern: ^(asc|desc)$
+            type: string
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns the list of activity types if found.
+        '204':
+          description: If no activity types are found.
+        '401':
+          description: If the request is unauthorized. User authentication is required.
+        '403':
+          description: If the request is forbidden. User does not have permission to access the resource.
+        '500':
+          description: If an unexpected error occurs during the get process.
+    delete:
+      tags:
+        - ActivityType
+      summary: Delete the activity types
+      description: API endpoint to delete the activity types based on the provided Id
+      parameters:
+        - name: userId
+          in: query
+          description: Unique ID associated with user who has initiated delete.
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: List of activity type Id's
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+          text/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+          application/*+json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+        required: true
+      responses:
+        '200':
+          description: If the activity type is successfully deleted.
+        '404':
+          description: If no activity type is found with the specified ID.
+        '400':
+          description: If the provided activity type ID is invalid or the delete request is malformed.
+        '401':
+          description: If the request is unauthorized. User authentication is required.
+        '403':
+          description: If the request is forbidden. User does not have permission to access the resource.
+        '500':
+          description: If an unexpected error occurs during the get process.
+  '/api/v{version}/ActivityType/{activityTypeId}':
+    get:
+      tags:
+        - ActivityType
+      summary: Retrieves the details of a specific activity type.
+      description: This endpoint retrieves the details of a specific activity type identified by its unique ID.
+      parameters:
+        - name: activityTypeId
+          in: path
+          description: The unique ID of the activity type to retrieve.
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns the details of the activity type if found.
+        '204':
+          description: If no activity type is found with the specified ID.
+        '400':
+          description: If the provided activity type ID is invalid.
+        '401':
+          description: If the request is unauthorized. User authentication is required.
+        '403':
+          description: If the request is forbidden. User does not have permission to access the resource.
+        '500':
+          description: If an unexpected error occurs during the get process.
+    patch:
+      tags:
+        - ActivityType
+      summary: Updates the details of a specific activity type.
+      description: This endpoint updates the details of a specific activity type identified by its unique ID.
+      parameters:
+        - name: activityTypeId
+          in: path
+          description: The unique ID of the activity type to update.
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The updated activity type data.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityTypeDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ActivityTypeDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ActivityTypeDTO'
+      responses:
+        '200':
+          description: If the activity type is successfully updated.
+        '404':
+          description: If no activity type is found with the specified ID.
+        '400':
+          description: If the provided activity type ID is invalid or the update request is malformed.
+        '401':
+          description: If the request is unauthorized. User authentication is required.
+        '403':
+          description: If the request is forbidden. User does not have permission to access the resource.
+        '500':
+          description: If an unexpected error occurs during the get process.
+  '/api/v{version}/ActivityType/search':
+    post:
+      tags:
+        - ActivityType
+      summary: Searches for activity types based on provided search criteria.
+      description: Retrieves a list of activity types matching the specified search criteria.
+      parameters:
+        - name: Size
+          in: query
+          description: The number of activity types to retrieve per page. Default is 10.
+          schema:
+            maximum: 2147483647
+            minimum: 1
+            type: integer
+            format: int32
+        - name: PageNumber
+          in: query
+          description: The page number to retrieve. Default is 1.
+          schema:
+            maximum: 2147483647
+            minimum: 1
+            type: integer
+            format: int32
+        - name: SortBy
+          in: query
+          description: The field to sort the activity types by.Default is Name
+          schema:
+            type: string
+        - name: SortOrder
+          in: query
+          description: 'The sort order, either ''asc'' or ''desc''.Default is asc'
+          schema:
+            pattern: ^(asc|desc)$
+            type: string
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The dictionary containing search criteria.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+          text/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+          application/*+json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+      responses:
+        '200':
+          description: Returns list of activity types that matches the search criteria
+        '404':
+          description: If no activity type is found with the search criteria.
+        '400':
+          description: If the provided search criteria is not matched.
+        '401':
+          description: If the request is unauthorized. User authentication is required.
+        '403':
+          description: If the request is forbidden. User does not have permission to access the resource.
+        '500':
+          description: If an unexpected error occurs during the search process.
+  '/api/v{version}/Connector':
+    get:
+      tags:
+        - Connector
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+    post:
+      tags:
+        - Connector
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Connector'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/Connector'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/Connector'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+    put:
+      tags:
+        - Connector
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Connector'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/Connector'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/Connector'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+    delete:
+      tags:
+        - Connector
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connector'
+  '/api/v{version}/Connector/{id}':
+    get:
+      tags:
+        - Connector
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Connector'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connector'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Connector'
+  /Error:
+    get:
+      tags:
+        - Error
+      responses:
+        '200':
+          description: Success
+  /Error/custom:
+    get:
+      tags:
+        - Error
+      summary: Handles the uncaught error during any operation(s).
+      parameters:
+        - name: errorMessage
+          in: query
+          schema:
+            type: string
+        - name: stackTrace
+          in: query
+          schema:
+            type: string
+        - name: controllerName
+          in: query
+          schema:
+            type: string
+        - name: actionName
+          in: query
+          schema:
+            type: string
+      responses:
+        '500':
+          description: Internal server error.
+  /api/Payload/create:
+    post:
+      tags:
+        - Payload
+      requestBody:
+        content:
+          application/json:
+            schema: { }
+          text/json:
+            schema: { }
+          application/*+json:
+            schema: { }
+      responses:
+        '200':
+          description: Success
+  '/api/v{version}/WebhookEvent/hooks':
+    get:
+      tags:
+        - WebhookEvent
+      summary: Get all hooks
+      description: Get all the webhooks based on the specified parameters
+      parameters:
+        - name: size
+          in: query
+          description: The number of webhooks to be returned.
+          schema:
+            type: integer
+            format: int32
+        - name: pageNumber
+          in: query
+          description: The page of webhooks to be returned.
+          schema:
+            type: integer
+            format: int32
+        - name: sortBy
+          in: query
+          description: The column to sort the list.
+          schema:
+            type: string
+        - name: sortOrder
+          in: query
+          description: The sorting order of the list.
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of all the webhook events
+        '204':
+          description: No webhook is found.
+        '401':
+          description: The user is not authorized.
+        '500':
+          description: Internal server error.
+    post:
+      tags:
+        - WebhookEvent
+      summary: Create a new webhook
+      description: Create a new webhook based on the input parameters
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Input parameters to create a new webhook
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEventCreateDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEventCreateDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/WebhookEventCreateDto'
+      responses:
+        '200':
+          description: Success
+        '201':
+          description: Webhook created successfully.
+        '400':
+          description: Bad Request.
+        '401':
+          description: The user is not authorized.
+        '409':
+          description: Webhook already exists
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - WebhookEvent
+      summary: Deletes multiple webhooks.
+      description: Deletes multiple webhooks identified by their IDs.
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The list of IDs of the webhooks to delete.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+          text/json:
+            schema:
+              type: array
+              items:
+                type: string
+          application/*+json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Returns the response with details of the successfully deleted webhooks.
+        '207':
+          description: Returns the response with details of partially deleted webhooks if any deletion fails.
+        '400':
+          description: Bad Request.
+        '401':
+          description: The user is not authorized.
+        '500':
+          description: Internal server error
+  '/api/v{version}/WebhookEvent/hooks/{hookId}':
+    get:
+      tags:
+        - WebhookEvent
+      summary: Get the webhook details
+      description: Get  the webhooks based on the specified hookid
+      parameters:
+        - name: hookId
+          in: path
+          description: Unique identifier of the hook.
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Webhook details
+        '204':
+          description: No data associated with the webhook found.
+        '401':
+          description: The user is not authorized.
+        '500':
+          description: Internal server error.
+  '/api/v{version}/WebhookEvent/systems/{system}/events/{Event}/hooks/{hookId}':
+    patch:
+      tags:
+        - WebhookEvent
+      summary: Updates a webhook for a specific system and event.
+      description: Updates the configuration of a webhook associated with a specific system and event.
+      parameters:
+        - name: system
+          in: path
+          description: The system for data management it is "data".
+          required: true
+          schema:
+            type: string
+        - name: Event
+          in: path
+          description: The event identifier.
+          required: true
+          schema:
+            type: string
+        - name: hookId
+          in: path
+          description: The webhook identifier.
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The data containing the changes to apply to the webhook.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookPatch'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/WebhookPatch'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/WebhookPatch'
+      responses:
+        '200':
+          description: Returns if the webhook was successfully updated.
+        '400':
+          description: 'Returns if the request is invalid or malformed, with details about the error.'
+        '401':
+          description: Returns if the user is not authorized to perform the operation.
+        '403':
+          description: Returns if the request is forbidden due to insufficient permissions.
+        '404':
+          description: 'Returns if the specified system, event, or webhook was not found.'
+        '500':
+          description: Returns if an unexpected error occurred on the server.
+  '/api/v{version}/WebhookEvent/hooks/search':
+    get:
+      tags:
+        - WebhookEvent
+      summary: Searches for webhooks based on specified criteria.
+      description: 'Retrieves a list of webhooks based on search criteria such as size, page number, search query, and sort order.'
+      parameters:
+        - name: size
+          in: query
+          description: The number of items per page (optional).
+          schema:
+            type: integer
+            format: int32
+        - name: pageNumber
+          in: query
+          description: The page number (optional).
+          schema:
+            type: integer
+            format: int32
+        - name: sortOrder
+          in: query
+          description: The sort order (optional).
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Dictionary that has key as search column and value as search text
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+          text/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+          application/*+json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+      responses:
+        '200':
+          description: Returns the list of webhooks matching the search criteria.
+        '204':
+          description: Returns if no webhooks are found matching the search criteria.
+        '401':
+          description: Returns if the user is not authorized to perform the operation.
+        '500':
+          description: Returns if an unexpected error occurred on the server.
+components:
+  schemas:
+    ActivitiesMapping:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        activityId:
+          type: string
+          nullable: true
+        sourceConnectorId:
+          type: string
+          nullable: true
+        targetConnectorId:
+          type: string
+          nullable: true
+        activity:
+          $ref: '#/components/schemas/Activity'
+        sourceConnector:
+          $ref: '#/components/schemas/Connector'
+        targetConnector:
+          $ref: '#/components/schemas/Connector'
+      additionalProperties: false
+    Activity:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        caption:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+          nullable: true
+        activitiesMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivitiesMapping'
+          nullable: true
+      additionalProperties: false
+    ActivityTypeDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          description: Description of the activity type.
+          nullable: true
+        createdBy:
+          type: string
+          description: The user who created the activity type.
+          nullable: true
+      additionalProperties: false
+    Connector:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        gatewayUrl:
+          type: string
+          nullable: true
+        connectorImage:
+          type: string
+          format: byte
+          nullable: true
+        created:
+          type: string
+          format: byte
+          nullable: true
+        createdBy:
+          type: string
+          nullable: true
+        securitySchemeId:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+          nullable: true
+        activitiesMappingSourceConnectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivitiesMapping'
+          nullable: true
+        activitiesMappingTargetConnectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivitiesMapping'
+          nullable: true
+      additionalProperties: false
+    WebhookEventCreateDto:
+      type: object
+      properties:
+        folderURN:
+          type: string
+          nullable: true
+        projectId:
+          type: string
+          nullable: true
+        activityName:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        eventName:
+          type: string
+          nullable: true
+        callbackUrl:
+          type: string
+          nullable: true
+      additionalProperties: false
+    WebhookPatch:
+      type: object
+      properties:
+        status:
+          type: string
+          description: 'Represents the status of the webhook. Can be "active" if the webhook is active, otherwise "inactive".'
+          nullable: true
+        filter:
+          type: string
+          description: JsonPath expression that can be used to filter the callbacks received by the webhook.
+          nullable: true
+        hookAttribute:
+          description: A user-defined JSON object used to store custom information for the webhook. The maximum size of the JSON object should be less than 1KB.
+          nullable: true
+        token:
+          type: string
+          description: A secret token used to generate a hash signature passed along with notification requests to the callback URL.
+          nullable: true
+        autoReactivateHook:
+          type: boolean
+          description: Flag to enable the hook for the automatic reactivation flow.
+          nullable: true
+        hookExpiry:
+          type: string
+          description: ISO8601 formatted date and time when the hook should expire and automatically be deleted. Providing null or an empty string updates the hook so that it never expires.
+          format: date-time
+          nullable: true
+      additionalProperties: false
